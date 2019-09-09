@@ -14,11 +14,11 @@ $app->config('debug', true);
 
 //Configuração da rota '/'
 $app->get('/', function() {
-    //Carregando o Header
+    //Carregando o Header - executando o construct
     $page = new Pager();
-    //Carregando o Index
+    //Carregando o Index -executando setTPL
     $page->setTpl("index");
-    //Ao final do comado carrega o Footer pois o destruct roda automáricamente no final
+    //Ao final do comado carrega o Footer pois o destruct roda automáricamente no final - executando o destruct
 });
 
 $app->run();
