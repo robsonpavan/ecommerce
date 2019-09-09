@@ -1,21 +1,24 @@
 <?php 
 
+//Configuração para trazer as dependencias
 require_once("vendor/autoload.php");
 
+//Definição das classes que deejo carregar
+use \Slim\Slim;
+use \Hcode\Pager;
+
 //Configurado Slim para definição das rotas
-$app = new \Slim\Slim();
+$app = new Slim();
 
 $app->config('debug', true);
 
+//Configuração da rota '/'
 $app->get('/', function() {
-    
-	//echo "OK";
-    $sql = new Hcode\DB\Sql();
-    
-    $result = $sql->select("SELECT * FROM tb_users");
-
-    echo json_encode($result);
-    
+    //Carregando o Header
+    $page = new Pager();
+    //Carregando o Index
+    $page->setTpl("index");
+    //Ao final do comado carrega o Footer pois o destruct roda automáricamente no final
 });
 
 $app->run();
