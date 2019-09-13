@@ -53,7 +53,7 @@ class User extends Model {
             $user->setData($data);
               
             //Criando sessão para receber os dados de login. O nome da sessão está sendo passado por meio da constante SESSION criada no objeto User.
-            //Utilizando o método get values para atribuir os valores do usuário na sessão
+            //Utilizando o método get values para atribuir os valores do usuário na sessão.
             $_SESSION[User::SESSION] = $user->getValues();
             
             return ($user);
@@ -63,7 +63,7 @@ class User extends Model {
             throw new \Exception("Usuário inexistente ou senha inválida.");
             
         }
-        
+         
     }   
     
     //Método para verificar se o logins e senha informados conferem (se o usuário está logado ou não)

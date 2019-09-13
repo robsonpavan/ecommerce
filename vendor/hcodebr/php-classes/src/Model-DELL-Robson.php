@@ -55,7 +55,7 @@ class Model {
             
             //Para criar o set dinâmico é necessário concatenar o termo set com o nome do atributo para isso, (tudo que se cria dinâmicamente no PHP deve estar entre {} (cahves))
             //após o $this-> colocar entre chaves os "valores" (set e nomedo do atributo) concatenados
-            //$key = nome do argumento e $value = valor atribuído ao argumento
+            //$key = nome do argumento e $value = valor atribuído ao argumento.
             $this->{"set".$key}($value);
             
         }
@@ -64,7 +64,6 @@ class Model {
        
     //Metodo gest para retornar o valor de todos os atributos
     public function getValues(){
-        
         //retornando o array value com os atributos setados
         return $this->values;
         
