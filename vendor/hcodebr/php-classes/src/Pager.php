@@ -22,8 +22,8 @@ class Pager {
         "data" => []
     ];
 
-    //Metodo (mágico) construtor - A variável $opts é um array que vai receber as opções configuração específicas de cada rota configurada
-    public function __construct($opts = array()) {
+    //Metodo (mágico) construtor - A variável $opts é um array que vai receber as opções configuração específicas de cada rota configurada e o diretório tpl para diferenciar os templates do site e interface de administração
+    public function __construct($opts = array(), $tpl_dir = "/views/") {
 
         //O array options está recebendo o merge entre os arrays default e opts, 
         //caso tenha algum parãmetro conflitante nos arrays as informações o opts irá sobrescrever as do default devido a ordem que estão setados na função array_merge
@@ -31,7 +31,7 @@ class Pager {
 
         //Configuração para os templates - Para funcionar os templates é necessário indicar a pasta pegar os arquivos de template html  e uma pasta para cache
         $config = array(
-            "tpl_dir" => $_SERVER["DOCUMENT_ROOT"] . "/views/", //Pasta para pegar os arquivos de template html.  A variável de ambiente "$_SERVER["DOCUMENT_ROOT"]" trás local do diretório rootconfigurado no apache
+            "tpl_dir" => $_SERVER["DOCUMENT_ROOT"] . $tpl_dir, //Pasta para pegar os arquivos de template html.  A variável de ambiente "$_SERVER["DOCUMENT_ROOT"]" trás local do diretório rootconfigurado no apache
             "cache_dir" => $_SERVER["DOCUMENT_ROOT"] . "/views-cache/", //Pasta para pegar os arquivos de cache.
             "debug" => false // set to false to improve the speed
         );
