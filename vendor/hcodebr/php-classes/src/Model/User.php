@@ -96,5 +96,94 @@ class User extends Model {
         
     }
     
+    public static function listAll(){
+        
+        $sql = new Sql();
+        
+        //Comado SQL unindo 2 tabelas para pegar as informações existentes nas duas tabelas user e person (o campo idperson existe nas duas taelas)
+        return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson;");
+        
+    }
+    
+    
+    //Metotodo para gravar os dados de um novo usuário no BD
+    public function save(){
+              
+        $sql = new Sql();
+        
+        //Váriável results recebendo o select que executa uma procedures no BD que inseri as informações nas tabelas person e user
+        //Os gets são criados automáticamente pelo metodo setData da classe Model
+        $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
+            array(
+            ":desperson"=>$this->getdesperson(),
+            ":deslogin"=>$this->getdeslogin(),
+            ":despassword"=>$this->getdespassword(),
+            ":desemail"=>$this->getdesemail(),
+            ":nrphone"=>$this->getnrphone(),
+            ":inadmin"=>$this->getinadmin()
+        ));
+        
+        /*
+         *  ":desperson"=>$this->getdesperson(),
+            ":deslogin"=>$this->getdeslogin(),
+            ":despassword"=>$this->getdespassword(),
+            ":desemail"=>$this->getdesemail(),
+            ":nrphone"=>$this->getnrphone(),
+            ":inadmin"=>$this->getinadmin()
+         * 
+         * 
+         */
+        //var_dump($results);
+        
+        //Armazenando no objeto o retorno do select realizado pela podecure
+        $this->setData($results[0]);
+        
+    }
+    
+    public function get($iduser){
+        
+        $sql = new Sql();
+        
+        $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser =  :iduser", array(
+            ":iduser"=>$iduser            
+        ));
+        
+        $this->setData($results[0]);
+        
+    }
+    
+    public function update(){
+        
+        $sql = new Sql();
+        
+        //Váriável results recebendo o select que executa uma procedures no BD que inseri as informações nas tabelas person e user
+        //Os gets são criados automáticamente pelo metodo setData da classe Model
+        $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
+            array(
+                ":iduser"=> $this->getiduser(),
+                ":desperson"=>$this->getdesperson(),
+                ":deslogin"=>$this->getdeslogin(),
+                ":despassword"=>$this->getdespassword(),
+                ":desemail"=>$this->getdesemail(),
+                ":nrphone"=>$this->getnrphone(),
+                ":inadmin"=>$this->getinadmin()
+            ));
+
+        
+        //Armazenando no objeto o retorno do select realizado pela podecure
+        $this->setData($results[0]);
+        
+    }
+    
+    public function delete(){
+        
+        $sql = new Sql();
+        
+        $sql->query("CALL sp_users_delete(:iduser)", array(
+            ":iduser"=> $this->getiduser()
+        ));
+        
+    }
+    
     
 }

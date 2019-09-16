@@ -1,69 +1,56 @@
-<?php 
+<?php
 
 namespace Hcode\DB;
 
 class Sql {
 
-	const HOSTNAME = "127.0.0.1";
-	const USERNAME = "robsonp";
-	const PASSWORD = "sdckk9y";
-	const DBNAME = "db_ecommerce";
+    const HOSTNAME = "127.0.0.1";
+    const USERNAME = "robsonp";
+    const PASSWORD = "sdckk9y";
+    const DBNAME = "db_ecommerce";
 
-	private $conn;
+    private $conn;
 
-	public function __construct()
-	{
+    public function __construct() {
 
-		$this->conn = new \PDO(
-			"mysql:dbname=".Sql::DBNAME.";host=".Sql::HOSTNAME, 
-			Sql::USERNAME,
-			Sql::PASSWORD
-		);
+        $this->conn = new \PDO(
+                "mysql:dbname=" . Sql::DBNAME . ";host=" . Sql::HOSTNAME, Sql::USERNAME, Sql::PASSWORD
+        );
+    }
 
-	}
+    private function setParams($statement, $parameters = array()) {
+        
+        foreach ($parameters as $key => $value) {
 
-	private function setParams($statement, $parameters = array())
-	{
+            $this->bindParam($statement, $key, $value);
+        }
+    }
 
-		foreach ($parameters as $key => $value) {
-			
-			$this->bindParam($statement, $key, $value);
+    private function bindParam($statement, $key, $value) {
 
-		}
+        $statement->bindParam($key, $value);
+    }
 
-	}
+    public function query($rawQuery, $params = array()) {
 
-	private function bindParam($statement, $key, $value)
-	{
+        $stmt = $this->conn->prepare($rawQuery);
 
-		$statement->bindParam($key, $value);
+        $this->setParams($stmt, $params);
 
-	}
+        $stmt->execute();
+    }
 
-	public function query($rawQuery, $params = array())
-	{
+    public function select($rawQuery, $params = array()): array {
+        
+        $stmt = $this->conn->prepare($rawQuery);
 
-		$stmt = $this->conn->prepare($rawQuery);
+        $this->setParams($stmt, $params);
 
-		$this->setParams($stmt, $params);
+        $stmt->execute();
 
-		$stmt->execute();
-
-	}
-
-	public function select($rawQuery, $params = array()):array
-	{
-
-		$stmt = $this->conn->prepare($rawQuery);
-
-		$this->setParams($stmt, $params);
-
-		$stmt->execute();
-
-		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-	}
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
 }
 
- ?>
+?>
