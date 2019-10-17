@@ -80,7 +80,7 @@ $app->get("/admin/logout", function () {
 //Rota para tela que listará todos os usuários
 $app->get("/admin/users", function () {
 
-    //Metodo estático para verificar (testar) o login do uauário
+    //Metodo estático para verificar (testar) o login do usuário (se ele está logado)
     User::verifyLogin();
 
     //Método estático para buscar todos os usuários existentes no banco de dados
@@ -90,7 +90,7 @@ $app->get("/admin/users", function () {
     $page = new PageAdmin();
 
     //Definindo qual página deverá ser desenhada 
-    //(Como não foram passados argumentos ao instânciar o objeto PageAdmin carregará com as configurações padrão e carregará no construct o headre e no destruct o footer
+    //(Como não foram passados argumentos ao instânciar o objeto PageAdmin carregará com as configurações padrão e carregará no construct o header e no destruct o footer
     //Esta sendo passado como parâmetro um array com os dados retornados do banco de dados para que a clsse PageAdmin inclua no template (necessário ajustar o template para exibir as variáveis
     $page->setTpl("users", array(
         "users" => $users
@@ -121,8 +121,10 @@ $app->get("/admin/users/:iduser/delete", function($iduser) {
     
     $user = new User();
     
+    //Buscando as informações do usuário existentes no BD
     $user->get((int)$iduser);
     
+    //Excluindo o usuário carregado no passo anterior
     $user->delete();
     
     //Encaminhando para página que lista os usuário após inserção do novo usuário
@@ -140,6 +142,7 @@ $app->get("/admin/users/:iduser", function ($iduser) {
 
     $user = new User();
     
+    //Buscando as informações do usuário existentes no BD
     $user->get((int)$iduser);
     
     //Instanciando o objeto PageAdmin carrregando o header e footer
@@ -203,6 +206,90 @@ $app->post("/admin/users/:iduser", function($iduser) {
     exit;
 });
 
+
+//Rota perdia senha forgot
+$app->get("/admin/forgot", function(){
+            
+    //como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+    //Carregando a ágina de login -executando setTPL
+    $page->setTpl("forgot");
+        
+});
+
+//Rota para enviar o e-mail
+$app->post("/admin/forgot", function (){
+
+    //Método da estático classe User para receber o e-mail do usuário passado pela pági a do esqueci a senha (forgot)
+    $user = User::getForgot($_POST["email"]);
+    
+    header("Location: /admin/forgot/sent");
+    exit;
+    
+});
+
+//Rota para página que envia e-mail para resetar a senha
+$app->get("/admin/forgot/sent", function (){
+    
+    //como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+    //Carregando a ágina de login -executando setTPL
+    $page->setTpl("forgot-sent");
+    
+});
+
+//Rota para acessar página para resetar a senha
+$app->get("/admin/forgot/reset", function (){
+    
+    $user = User::validForgotDecrypt($_GET["code"]); 
+    
+    //como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+    //Carregando a página de login -executando setTPL e passando os parâmetros solicitados pela página de reset
+    $page->setTpl("forgot-reset", array(
+        "name"=>$user["desperson"],
+        "code"=>$_GET["code"]        
+    ));
+    
+});
+
+//Rota para chamar o metodos que altera a senha e redireciona para a página de confirmação de alteração de senha
+$app->post("/admin/forgot/reset", function (){
+    
+    //Validando o código de recovery (idrecovery)
+    $forgot = User::validForgotDecrypt($_POST["code"]); 
+    //Registrando no BD que a alteração da senha foi realizada
+    User::setForgotUsed($forgot["idrecovery"]);
+    
+    $user = new User();
+    //Buscando as informaçoes do usuário
+    $user->get((int)$forgot["iduser"]);
+    //Criptografando a senha função password_hash(senha, Padrão de criptografia, custo poder computacional empregado para gerar o hash
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+        "cost"=>12
+        ]);
+    
+    //Chamando método para alterar a senha
+    $user->setPassword($password);
+    
+    //como a tela de login não tem o mesmo header e footer padrão das demais é necessário passar alguns parâmetros no momento do instanciamento para desabilita-los
+    $page = new PageAdmin([
+        "header" => false,
+        "footer" => false
+    ]);
+    //Carregando a página informando que o a senha foi alterada com sucesso
+    $page->setTpl("forgot-reset-success");
+    
+});
 
 
 
