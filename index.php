@@ -405,7 +405,24 @@ $app->post("/admin/categories/:idcategory", function ($idcategory){
     
 });
 
-
+//Rota para acesso às categorias acessadas via site
+$app->get("/categories/:idcategory", function ($idcategory){
+    
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);  
+        
+    $page = new Pager();
+    
+    //Carregando a página da categoria, e passando as informações referentes a categoria selecionada
+    $page->setTpl("category", [
+        'category'=>$category->getValues(),
+        'products'=>[]
+    ]);
+    
+    
+});
 
 
 $app->run();

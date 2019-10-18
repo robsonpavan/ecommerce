@@ -45,6 +45,8 @@ class Category extends Model {
         //Armazenando no objeto o retorno do select realizado pela podecure
         $this->setData($results[0]);
         
+        //Atualizando arquivo html com a relação das categorias
+        Category::updateFile();
         
     }//Fim do método save
     
@@ -72,7 +74,30 @@ class Category extends Model {
             ":idcategory"=> $this->getidcategory()
         ]);
         
+        //Atualizando arquivo html com a relação das categorias
+        Category::updateFile();
+        
     }//Fim método delete
+    
+    
+    public static function updateFile(){
+        
+        $categories = Category::listAll();
+        
+        $html = [];
+        
+        //Criando estrutura html para ser inserida no arquivo
+        foreach ($categories as $row){
+            array_push($html, '<li><a href="/categories/'.$row["idcategory"].'">'.$row["descategory"].'</a></li>');
+        }
+        
+        //Escrevendo no arquivo html de categorias. Necessário informar o camonho absoluto do arquivo, para isso serão usdas das variáveis globais de ambiente. 
+        //O conteúdo do array $html tem que ser convetido para string para ser inserido no arquivo
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode("", $html));
+        
+    }//Fim do método updateFile
+    
+    
     
     
 }//Fim da Classe
