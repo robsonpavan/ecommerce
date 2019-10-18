@@ -36,7 +36,7 @@ class Model {
 
             //Configuração do get para retornar o valor do atributo
             case "get":
-                return $this->values[$fieldname];
+                return (isset($this->values[$fieldname]))?$this->values[$fieldname]:NULL;
                 break;
             //Configurando o set para setar o atributo $arguments é o valor passado para o atributo
             case "set":
