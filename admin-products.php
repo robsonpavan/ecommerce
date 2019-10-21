@@ -46,6 +46,8 @@ $app->post("/admin/products/create", function () {
     $products->setData($_POST);
 
     $products->save();
+    
+    $products->setPhoto($_FILES["file"]);
 
     //Encaminhando para página que lista os produtos
     header("Location: /admin/products");

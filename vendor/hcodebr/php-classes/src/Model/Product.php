@@ -26,9 +26,7 @@ class Product extends Model {
 
         //Comado SQL para listar todas as categorias
         return $sql->select("SELECT * FROM tb_products a ORDER BY a.desproduct;");
-    }
-
-//Fim do método listAll
+    }//Fim do método listAll
 
     public function save() {
 
@@ -47,9 +45,7 @@ class Product extends Model {
             ":desurl" => $this->getdesurl()
         ));
         $this->setData($results[0]);
-    }
-
-//Fim do método save
+    }//Fim do método save
 
     public function get($idproduct) {
 
@@ -57,13 +53,12 @@ class Product extends Model {
 
         $results = $sql->select("SELECT * FROM tb_products WHERE idproduct = :idproduct", [
             ":idproduct" => $idproduct
-        ]);
-
+        ]);        
+               
         //Armazenando no objeto o retorno do select realizado pela podecure
         $this->setData($results[0]);
-    }
-
-//Fim do método get
+       
+    } //Fim do método get
 
     public function delete() {
 
@@ -73,9 +68,8 @@ class Product extends Model {
         $sql->query("DELETE FROM tb_products WHERE idproduct = :idproduct", [
             ":idproduct" => $this->getidproduct()
         ]);
-    }
-
-//Fim método delete
+    } //Fim método delete
+    
     //Método para verificar se existem fotos
     public function checkPhotos() {
 
@@ -89,13 +83,13 @@ class Product extends Model {
                         $this->getidproduct() . ".jpg"
                 )) {
             $url = "/res/site/img/products/" . $this->getidproduct() . ".jpg";
+            
         } else {
             $url = "/res/site/img/product.jpg";
         }
         return $this->setdesphoto($url);
-    }
-
-//Fim do método checkPhotos
+    } //Fim do método checkPhotos
+    
     //"Reescrita" do método getValues para tratar as fotos  dos produtos
     public function getValues() {
 
@@ -104,44 +98,40 @@ class Product extends Model {
         $values = parent::getValues();
 
         return $values;
-    }
-
-//Fim fuction getValues
+    } //Fim fuction getValues
+    
     //Metodo para fazer upload do arquivo da foto
     public function setPhoto($file) {
 
-        //Identificando o tipo de arquivo ****
-        //Verificando a extensão
-        $extension = explode('.', $file['name']);
-        $extension = end($extension);
-        switch ($extension) {
-            case "jpg":
-            case "jpeg":
-                $image = imagecreatefromjpeg($file["tmp_name"]);
-                break;
-            case "gif":
-                $image = imagecreatefromgif($file["tmp_name"]);
-                break;
-            case "png":
-                $image = imagecreatefrompng($file["tmp_name"]);
-                break;
+        if(!empty($file['name'])){
+            //Identificando o tipo de arquivo ****
+            //Verificando a extensão
+            $extension = explode('.', $file['name']);
+            $extension = end($extension);
+            switch ($extension) {
+                case "jpg":
+                case "jpeg":
+                    $image = imagecreatefromjpeg($file["tmp_name"]);
+                    break;
+                case "gif":
+                    $image = imagecreatefromgif($file["tmp_name"]);
+                    break;
+                case "png":
+                    $image = imagecreatefrompng($file["tmp_name"]);
+                    break;
+            }
+
+            //Definido caminho e nome para imagem
+            $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
+                    "res" . DIRECTORY_SEPARATOR .
+                    "site" . DIRECTORY_SEPARATOR .
+                    "img" . DIRECTORY_SEPARATOR .
+                    "products" . DIRECTORY_SEPARATOR .
+                    $this->getidproduct() . ".jpg";
+            imagejpeg($image, $dist);
+            imagedestroy($image);
         }
-
-        //Definido caminho e nome para imagem
-        $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR .
-                "res" . DIRECTORY_SEPARATOR .
-                "site" . DIRECTORY_SEPARATOR .
-                "img" . DIRECTORY_SEPARATOR .
-                "products" . DIRECTORY_SEPARATOR .
-                $this->getidproduct() . ".jpg";
-        imagejpeg($image, $dist);
-        imagedestroy($image);
         $this->checkPhoto();
-    }
-
-//Fim do método setPhotos
-}
-
-//Fim da classe
-
-
+    }//Fim do método setPhotos
+    
+}//Fim da classe
