@@ -8,14 +8,20 @@
 
 use \Hcode\Pager;
 use \Hcode\Model\Category;
-
+use Hcode\Model\Product;
 
 //Configuração da rota '/'
 $app->get('/', function() {
+    
+    //Instanciando objeto para carregar os produtos a partir do banco de dados
+    $products = Product::listAll();
+    
     //Carregando o Header - executando o construct
     $page = new Pager();
     //Carregando o Index -executando setTPL
-    $page->setTpl("index");
+    $page->setTpl("index", array(
+        "products"=> Product::checklist($products)
+    ));
     //Ao final do comado carrega o Footer pois o destruct roda automáricamente no final - executando o destruct
 });
 
@@ -36,3 +42,4 @@ $app->get("/categories/:idcategory", function ($idcategory){
     ]);
        
 });
+

@@ -50,6 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     |               | sidebar-collapse                        |
     |               | sidebar-mini                            |
     |---------------------------------------------------------|
+    <body class="hold-transition skin-blue sidebar-mini">
     -->
     <body class="hold-transition skin-blue sidebar-mini">
         <div class="wrapper">
@@ -192,13 +193,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <li class="user-body">
                                         <div class="row">
                                             <div class="col-xs-4 text-center">
-                                                <a href="#">Followers</a>
+                                                <a href="#">Seguidores</a>
                                             </div>
                                             <div class="col-xs-4 text-center">
-                                                <a href="#">Sales</a>
+                                                <a href="#">Vendas</a>
                                             </div>
                                             <div class="col-xs-4 text-center">
-                                                <a href="#">Friends</a>
+                                                <a href="#">Amigos</a>
                                             </div>
                                         </div>
                                         <!-- /.row -->
@@ -206,10 +207,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <!-- Menu Footer-->
                                     <li class="user-footer">
                                         <div class="pull-left">
-                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                            <a href="#" class="btn btn-default btn-flat">Perfil</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="/admin/logout" class="btn btn-default btn-flat">Sign out</a>
+                                            <a href="/admin/logout" class="btn btn-default btn-flat">Logout</a>
                                         </div>
                                     </li>
                                 </ul>

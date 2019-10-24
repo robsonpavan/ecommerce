@@ -20,6 +20,7 @@ use \Hcode\Mailer;
  */
 class Product extends Model {
 
+    //Método para buscar todos os produtos no banco de dados
     public static function listAll() {
 
         $sql = new Sql();
@@ -28,6 +29,23 @@ class Product extends Model {
         return $sql->select("SELECT * FROM tb_products a ORDER BY a.desproduct;");
     }//Fim do método listAll
 
+    //Método para carregar imagens na memória
+    public static function checklist($list){
+        
+        //Utilizado o & para manipular o conteúdo da váriável de origem (altera dentro do $list)
+        foreach ($list as &$row) {
+            
+            $p = new Product();
+            $p->setData($row);
+            $row = $p->getValues();
+            
+        }
+        
+        return $list;
+    }//Fim do método checklits
+
+
+    //Método para salvar os produtos no banco de dados
     public function save() {
 
         $sql = new Sql();
