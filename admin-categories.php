@@ -9,6 +9,7 @@
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 use \Hcode\Model\Category;
+use \Hcode\Model\Product;
 
 //Rota para ac essar template de categorias
 $app->get("/admin/categories", function(){
@@ -115,6 +116,73 @@ $app->post("/admin/categories/:idcategory", function ($idcategory){
     $category->save();
     
     header("Location: /admin/categories");
+    exit;
+    
+});
+
+
+//Rota para página de acossiação dos produtos com as categorias
+$app->get("/admin/categories/:idcategory/products", function($idcategory){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $page = new PageAdmin();
+    
+    //Carregando a página de update
+    $page->setTpl("categories-products", [
+        "category"=>$category->getValues(),
+        "productsRelated"=>$category->getProducts(),
+        "productsNotRelated"=>$category->getProducts(false)
+    ]);
+    
+});
+
+//Rota para adição do produtos na categoria
+$app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idcategory, $idproduct){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $product = new Product();
+    
+    $product->get((int)$idproduct);
+    
+    $category->addProduct($product);
+    
+    header("Location: /admin/categories/".$idcategory."/products");
+    exit;
+    
+});
+
+//Rota para remoção do produtos da categoria
+$app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($idcategory, $idproduct){
+    
+    //Metodo estático para verificar (testar) o login do uauário
+    User::verifyLogin();
+ 
+    $category = new Category();
+    
+    //Carregando o objeto selecionado para edição. è feito cast do id para inteiro pois tudo que é carregado via url é convertido para texto
+    $category->get((int)$idcategory);
+    
+    $product = new Product();
+    
+    $product->get((int)$idproduct);
+    
+    $category->removeProduct($product);
+    
+    header("Location: /admin/categories/".$idcategory."/products");
     exit;
     
 });
