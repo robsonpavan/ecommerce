@@ -60,3 +60,21 @@ $app->get("/categories/:idcategory", function ($idcategory){
        
 });
 
+//Rota para acessar os detalhes do produto
+$app->get("/products/:desurl", function($desurl){
+    
+    $product = new Product();
+    
+    $product->getFromURL($desurl);
+    
+    $page = new Pager();
+    
+    //Carregando a página da categoria, e passando as informações referentes a categoria selecionada
+    $page->setTpl("product-detail", [
+        'product'=>$product->getValues(),
+        'categories'=> $product->getCategories()
+    ]);
+        
+    
+});
+

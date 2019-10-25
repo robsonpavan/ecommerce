@@ -152,4 +152,33 @@ class Product extends Model {
         $this->checkPhoto();
     }//Fim do método setPhotos
     
+    //Método para buscar um produto a partir do campo desurl
+    public function getFromURL($desurl){
+        
+        $sql = new Sql();
+        
+        $rows = $sql->select("SELECT * FROM tb_products WHERE desurl=:desurl LIMIT 1",[
+            ':desurl'=>$desurl
+        ]);
+        
+        $this->setData($rows[0]);
+                
+    }//Fim do método getFromURL
+    
+    
+    //Método para buscar as categorias do produto
+    public function getCategories(){
+        
+        $sql = new Sql();
+        
+        return $sql->select("
+            SELECT * 
+            FROM tb_categories a 
+            INNER JOIN tb_productscategories b ON a.idcategory = b.idcategory 
+            WHERE b.idproduct = :idproduct;", [
+                ':idproduct'=> $this->getidproduct()
+            ]);
+        
+    }//Fim do método getCategories
+    
 }//Fim da classe
