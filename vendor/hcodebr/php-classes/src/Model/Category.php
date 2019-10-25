@@ -131,6 +131,36 @@ class Category extends Model {
         
     }//Fim do método getProducts
     
+    //Método para buscar os produtos e realizar a paginação
+    public function getProductsPage($page = 1, $itensPerPage = 8){
+        
+        //Cálculo para definição do registro inicial para ser passado como parametro de inicialização do o SELECT de paginação (LIMIT)
+        $start = ($page - 1) * $itensPerPage;
+        
+        $sql = new Sql();
+                
+        $results = $sql->select("
+                    SELECT SQL_CALC_FOUND_ROWS * 
+                    FROM tb_products a 
+                    INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct
+                    INNER JOIN tb_categories c ON c.idcategory = b.idcategory
+                    WHERE c.idcategory = :idcategory
+                    LIMIT $start, $itensPerPage;", [
+                        'idcategory'=> $this->getidcategory()
+                    ]);
+        //Para saber quantos itens existem
+        $resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal;");
+        
+        //Array de retorno 'data' retorna a relação de produtos paginada; 'total' retorno o total de produtos; 'pages' retorna o número total de páginas
+        //ceil é uma função do php que faz o arredandamento para cima
+        return array(
+            'data'=> Product::checklist($results),
+            'total'=>(int)$resultTotal[0]["nrtotal"],
+            'pages'=> ceil($resultTotal[0]["nrtotal"] / $itensPerPage)
+        );
+        
+    }//Fim do método getProductsPage
+
     //Método para adicionar um produto a uma categoria
     public function addProduct (Product $product){
         
