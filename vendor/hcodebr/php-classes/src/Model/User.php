@@ -20,6 +20,64 @@ class User extends Model {
     //Constantes criadas para criptografar a cgave de recovery gerada para troca de senha (forgot)
     const SECRET = "HcodePhp7_Secret";
     const SECRET_IV = "HcodePhp7_Secret_IV";
+    
+    //Metodo para verificar se o usuário existe na sessão se o ID não é nulo
+    public static function getFromSession(){
+        
+        $user = new User();
+        
+        //Verificando se a sessão já está definida
+        if (isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION] > 0){
+            //Setando as informações da sessão para o obejto user
+            $user->setData($_SESSION[User::SESSION]);            
+        }
+        
+        return $user;
+            
+    }//Fim do método getFromSession
+    
+    
+    
+    //Método para verificar se o usuário está logado
+    public static function checkLogin($inadmin = true){
+        
+        if(
+            !isset($_SESSION[User::SESSION]) //Verificando se existe a Session com a constante session ou não (se a sessão não foi criada/  definida)
+            ||
+            !$_SESSION[User::SESSION] //Verificando se a sessão, apesar de existe, não está vazia
+            ||
+            !(int)$_SESSION[User::SESSION]["iduser"] > 0 //Verificar o Id do usuário, converte o id carregado na sessão para inteiro,          
+        ){
+            //Não está logado
+            return false;
+            
+        } else {
+            
+            //Verificar se o usuário pode logar na área admnistrativa ou não
+            //Testar se é uma rota da admiistração - $inadmin === true
+            //Testar se o usuário tem privilégios adinistrativos - (bool)$_SESSION[User::SESSION]["indamin"] === true
+            if ($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true){
+                
+                //Usuário logado e é administrador
+                return true;
+                
+            } else if ($inadmin === false){
+                
+                //Usuário logado não é administrador e não está tentando acessar uma rota administrativa
+                return true;
+                
+            } else {
+                
+                return false;
+                
+            }
+            
+        }
+        
+        
+    }//Fim do método cheklogin
+
+
 
     //Metodo para realizar o login - Busca o login no banco, se encontrar criptografa a senha digitada e compara os hashs
     public static function login ($login, $password){
@@ -74,6 +132,8 @@ class User extends Model {
     public static function verifyLogin($inadmin = true){
         
         //If pra testar se o usuário está logado ou não
+        //Código aontigo mantido pelas explicações/exemplos de teste de validação de login de usuários via sessão
+        /*
         if(
             !isset($_SESSION[User::SESSION]) //Verificando se existe a Session com a constante session ou não (se a sessão não foi criada/  definida)
             ||
@@ -83,7 +143,9 @@ class User extends Model {
             ||                                           // se o id for vazio transforma em zero em seguida basta testar se o id é maior que zero para verificar se há um id válido ou não           
             (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin //Verificando se o usuário se logou para acessar a área de administração (se o usuário é administrador logado na área de administração)
                                                                    //Verifica se o atributo inadmin é true ou não, se for false o usuário não tem privilégios administrativos
-        ){
+        ){*/        
+        if (User::checkLogin($inadmin))
+        {
             //Redirecionando para teala de login
             header("Location: /admin/login");
             //Encerrando a execução

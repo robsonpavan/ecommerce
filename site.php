@@ -9,6 +9,7 @@
 use \Hcode\Pager;
 use \Hcode\Model\Category;
 use Hcode\Model\Product;
+use Hcode\Model\Cart;
 
 //Configuração da rota '/'
 $app->get('/', function() {
@@ -75,6 +76,17 @@ $app->get("/products/:desurl", function($desurl){
         'categories'=> $product->getCategories()
     ]);
         
+    
+});
+
+$app->get("/cart", function (){
+    
+    $cart = Cart::getFromSession();
+    
+    $page = new Pager();
+    
+    //Carregando a página da categoria, e passando as informações referentes a categoria selecionada
+    $page->setTpl("cart");
     
 });
 
