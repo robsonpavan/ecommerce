@@ -35,8 +35,8 @@ class Cart extends Model{
         $cart = new cart();
         
         //Verifica se o carrinho já está na sessão - isset($_SESSION[Cart::SESSION])
-        //Verificar se debtro da sessão existe o id do carrinho e se ele é maior que zero
-        //Será verdadeiro se a sessão existir com o o carrinho e se o id do carrinho for maior que zero
+        //Verificar se dentro da sessão existe o id do carrinho e se ele é maior que zero
+        //Será verdadeiro se a sessão existir com o carrinho e se o id do carrinho for maior que zero
         if(isset($_SESSION[Cart::SESSION]) && ((int)$_SESSION[Cart::SESSION]['idcart']>0) ){
             
             //carregando carrinho que já existe no BD e já foi carregado na sessão

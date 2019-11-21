@@ -48,6 +48,7 @@ class User extends Model {
             ||
             !(int)$_SESSION[User::SESSION]["iduser"] > 0 //Verificar o Id do usuário, converte o id carregado na sessão para inteiro,          
         ){
+            echo "Não existe na sessão";
             //Não está logado
             return false;
             
@@ -60,14 +61,14 @@ class User extends Model {
                 
                 //Usuário logado e é administrador
                 return true;
-                
+                echo "logar admin";
             } else if ($inadmin === false){
-                
+                echo "Logar site";
                 //Usuário logado não é administrador e não está tentando acessar uma rota administrativa
                 return true;
                 
             } else {
-                
+                echo "não logar";
                 return false;
                 
             }
@@ -107,7 +108,7 @@ class User extends Model {
         //Realizando teste se a senha digitada está correta
         if (password_verify($password, $data["despassword"]) === true ){
             
-            //Por ser um método estático está sendo gerada ima instância da própria classe Users
+            //Por ser um método estático está sendo gerada uma instância da própria classe Users
             $user = new User();
             
             //Chamando método setData que receber as informações trazidas do Banco de dados e monta os nomes de métodos dinâmicamente 
@@ -143,9 +144,9 @@ class User extends Model {
             ||                                           // se o id for vazio transforma em zero em seguida basta testar se o id é maior que zero para verificar se há um id válido ou não           
             (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin //Verificando se o usuário se logou para acessar a área de administração (se o usuário é administrador logado na área de administração)
                                                                    //Verifica se o atributo inadmin é true ou não, se for false o usuário não tem privilégios administrativos
-        ){*/        
-        if (User::checkLogin($inadmin))
-        {
+        )//{*/        
+        if (!User::checkLogin($inadmin))
+        {   
             //Redirecionando para teala de login
             header("Location: /admin/login");
             //Encerrando a execução
