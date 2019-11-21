@@ -168,5 +168,42 @@ class Cart extends Model{
                 
     }//Fim método delete
     
+    //Método para adicionar um produto no carrinho
+    public function addProduct (Product $product){
+        
+        $sql = new Sql();
+        
+        $sql->query("INSERT INTO tb_cartsproducts (idcart, idproduct) VALUES (:idcart, idproduct);", [
+            ':idcart'=> $this->getidcart(),
+            'idprocuct'=>$product->getidproduct()
+        ]);
+        
+    }//Fim do método addProduct
     
-}
+    //Método para remover um produto do carrinho
+    public function removeProduct(Product $product, $all = false){
+        
+        $sql = new Sql();
+        
+        if ($all){
+            $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW()WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL",[
+                ":idcart"=> $this->getidcart(),
+                "idproduct"=>$product->getidproduct()
+            ]);
+        }else{
+            $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW()WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL LIMIT 1;",[
+                ":idcart"=> $this->getidcart(),
+                "idproduct"=>$product->getidproduct()
+            ]);
+        }        
+        
+    }//Fim do método removeProduct
+    
+    //Método para listar os produtos do carrinho
+    public function getProducts() {
+        
+        //CONTINUAR A PARTIR DA CRIAÇÃO DESSE MÉTODO VÍDEO AULA COM 11MIN20SEG *********************************************************************************************************************************
+        
+    }//Fim do método getProducts
+    
+}//Fim da classe
