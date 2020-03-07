@@ -218,4 +218,27 @@ class Cart extends Model{
         
     }//Fim do método getProducts
     
+
+    //Método para listar os produtos do carrinho
+    public function getProductsTotals() {
+        
+        $sql = new Sql();
+        
+        $results = $sql->select("SELECT SUM(a.vlprice) AS vlprice, SUM(a.vlwidth) AS vlwidth, SUM(a.vllength) AS vllength, SUM(a.vlweight) AS vlweight, COUNT(*) AS nrqtd
+                                FROM tb_products a
+                                INNER JOIN tb_cartsproducts b ON a.idproduct = b.idproduct
+                                WHERE b.idcart = :idcart AND b.dtremoved IS NULL;, 
+                              [
+                                ':idcart'=>$this->getidcart()
+                              ]);
+
+        if (count($results) > 0) {
+            return results[0];        
+        } else {
+            return [ ];
+        }
+    }//Fim do método getProductsTotals
+
+
 }//Fim da classe
+
