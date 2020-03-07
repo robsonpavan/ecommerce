@@ -86,7 +86,10 @@ $app->get("/cart", function (){
     $page = new Pager();
     
     //Carregando a página da categoria, e passando as informações referentes a categoria selecionada
-    $page->setTpl("cart");
+    $page->setTpl("cart", [
+        'cart'=>$cart->getValues(),
+        'products'=>$cart->getProducts()
+    ]);
     
 });
 

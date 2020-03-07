@@ -173,9 +173,9 @@ class Cart extends Model{
         
         $sql = new Sql();
         
-        $sql->query("INSERT INTO tb_cartsproducts (idcart, idproduct) VALUES (:idcart, idproduct);", [
+        $sql->query("INSERT INTO tb_cartsproducts (idcart, idproduct) VALUES (:idcart, :idproduct);", [
             ':idcart'=> $this->getidcart(),
-            'idprocuct'=>$product->getidproduct()
+            ':idprocuct'=>$product->getidproduct()
         ]);
         
     }//Fim do método addProduct
@@ -188,12 +188,12 @@ class Cart extends Model{
         if ($all){
             $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW()WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL",[
                 ":idcart"=> $this->getidcart(),
-                "idproduct"=>$product->getidproduct()
+                ":idproduct"=>$product->getidproduct()
             ]);
         }else{
             $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW()WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL LIMIT 1;",[
                 ":idcart"=> $this->getidcart(),
-                "idproduct"=>$product->getidproduct()
+                ":idproduct"=>$product->getidproduct()
             ]);
         }        
         
@@ -202,7 +202,19 @@ class Cart extends Model{
     //Método para listar os produtos do carrinho
     public function getProducts() {
         
-        //CONTINUAR A PARTIR DA CRIAÇÃO DESSE MÉTODO VÍDEO AULA COM 11MIN20SEG *********************************************************************************************************************************
+        $sql = new Sql();
+        
+        $rows = $sql->select("SELECT b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vllength, b.weigth, b.desurl, COUNT(*) AS nrqtd, SUM(b.vlprice) AS vltotal
+                              FROM tb_cartsproducts a
+                              INNER JOIN tb_products b ON a.idproduct = b.idproduct
+                              WHERE a.idcart = :idcart AND adtremoved IS NULL
+                              GROUP BY b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vllength, b.weigth, b.desurl
+                              ORDER BY b.desproduct", 
+                              [
+                                ':idcart'=>$this->getidcart()
+                              ]);
+        return Product::checklist($rows);        
+        
         
     }//Fim do método getProducts
     

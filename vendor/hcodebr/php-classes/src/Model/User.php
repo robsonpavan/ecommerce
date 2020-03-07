@@ -48,7 +48,7 @@ class User extends Model {
             ||
             !(int)$_SESSION[User::SESSION]["iduser"] > 0 //Verificar o Id do usuário, converte o id carregado na sessão para inteiro,          
         ){
-            echo "Não existe na sessão";
+            // echo "Não existe na sessão";
             //Não está logado
             return false;
             
@@ -61,14 +61,14 @@ class User extends Model {
                 
                 //Usuário logado e é administrador
                 return true;
-                echo "logar admin";
+                // echo "logar admin";
             } else if ($inadmin === false){
-                echo "Logar site";
+                // echo "Logar site";
                 //Usuário logado não é administrador e não está tentando acessar uma rota administrativa
                 return true;
                 
             } else {
-                echo "não logar";
+                // echo "não logar";
                 return false;
                 
             }
